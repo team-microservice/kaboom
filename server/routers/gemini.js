@@ -1,9 +1,7 @@
 const express = require("express");
-const GeminiController = require("../controllers/GeminiController");
+const GeminiController = require("../controllers/GeminiController.js");
 const router = express.Router();
 
-router.post("/generate-quiz", GeminiController.generateQuiz);
-router.post("/check-answers", GeminiController.checkAnswers);
-router.post("/get-hint", GeminiController.getHint);
+router.get("/generate-quiz", GeminiController.generateQuiz);
 
 module.exports = router;
