@@ -3,8 +3,6 @@ const { generateContent } = require("../helpers/gemini");
 class GeminiController {
   static async generateQuiz(req, res) {
     try {
-      console.log("test");
-
       const prompt = `Generate 10 multiple-choice questions about Indonesia in Bahasa Indonesia. 
           For each question, provide 4 options and indicate the index (0-based) of the correct answer.
           Format the response as a JSON object with this exact structure:
