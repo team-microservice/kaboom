@@ -94,6 +94,8 @@ io.on("connection", (socket) => {
     };
 
     if (playerConnected == 2) {
+      console.log(question, "Questions");
+
       io.emit("sendquestions", question);
       console.log("Player2");
     } else {
