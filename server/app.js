@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== "production") {
 
 const PORT = process.env.PORT || 3000;
 const { default: axios } = require("axios");
+const { log } = require("console");
 const cors = require("cors");
 const express = require("express");
 const app = express();
@@ -84,6 +85,8 @@ io.on("connection", (socket) => {
     const result = await axios.get(
       "https://gp.dhronz.space/gemini/generate-quiz"
     );
+    console.log(result, "Result");
+    
     let jsoncontent = JSON.parse(result);
 
     if (playerConnected == 2) {
