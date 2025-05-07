@@ -6,7 +6,6 @@ import socket from "../lib/socket";
 import Card from "../components/Card";
 import { useTimer } from "use-timer";
 
-
 export default function QuizPage() {
   const [questions, setQuestions] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -17,7 +16,7 @@ export default function QuizPage() {
 
   const { time, start, reset, pause } = useTimer({
     initialTime: 10,
-    timerType: 'DECREMENTAL',
+    timerType: "DECREMENTAL",
     endTime: 0,
     onTimeOver: () => {
       handleNextQuestion();
@@ -55,19 +54,19 @@ export default function QuizPage() {
     }
   }, [currentQuestionIndex]);
 
-  const handleNextQuestion = () => {    
+  const handleNextQuestion = () => {
     if (questions && currentQuestionIndex < questions.questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
-      reset()
+      setCurrentQuestionIndex((prev) => prev + 1);
+      reset();
     } else {
       setIsQuizFinished(true);
-      reset()
-      
+      reset();
+
       Swal.fire({
-        title: 'Quiz Finished!',
+        title: "Quiz Finished!",
         text: `Your final score: ${score}`,
-        icon: 'success',
-        confirmButtonText: 'OK'
+        icon: "success",
+        confirmButtonText: "OK",
       });
     }
   };
@@ -75,38 +74,42 @@ export default function QuizPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!selectedAnswer) return;
-    
+
     const currentQuestion = questions.questions[currentQuestionIndex];
     if (parseInt(selectedAnswer) === currentQuestion.correctAnswer) {
       const newScore = score + 10;
       setScore(newScore);
-      
+
       socket.emit("result", newScore);
-      
+
       Swal.fire({
-        title: 'Correct!',
-        text: 'Good job!',
-        icon: 'success',
+        title: "Correct!",
+        text: "Good job!",
+        icon: "success",
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
     } else {
       Swal.fire({
-        title: 'Incorrect!',
-        text: `The correct answer was: ${currentQuestion.choices[currentQuestion.correctAnswer]}`,
-        icon: 'error',
+        title: "Incorrect!",
+        text: `The correct answer was: ${
+          currentQuestion.choices[currentQuestion.correctAnswer]
+        }`,
+        icon: "error",
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
     }
-    
+
     handleNextQuestion();
   };
 
   if (!questions) {
     return (
       <div className="w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative lightBackground">
-        <div className="text-2xl font-bold text-white">Loading questions...</div>
+        <div className="text-2xl font-bold text-white">
+          Loading questions...
+        </div>
       </div>
     );
   }
@@ -122,7 +125,14 @@ export default function QuizPage() {
         />
         {/* Snowfall container (will be filled by JS) */}
         <div id="snowfall-container" />
-          
+
+        {/* Timer */}
+        <div className="absolute top-5 w-20 left-1/2 transform -translate-x-1/2 mt-12 z-10">
+          <div className="bg-red-600 text-white px-4 py-2 rounded-full text-center font-bold">
+            {time}s
+          </div>
+        </div>
+
         {/* Opponent Score (top-left) */}
         <div className="absolute top-5 left-5 z-10">
           <div
@@ -141,7 +151,6 @@ export default function QuizPage() {
         </div>
         {/* Quiz Form */}
 
-
         <div
           id="card"
           className="bg-gray-900 border-[5px] border-orange-500 rounded-2xl p-10 w-[600px] text-center relative z-10 shadow-xl transition duration-500 text-white"
@@ -159,7 +168,9 @@ export default function QuizPage() {
                   key={index}
                   id={`answer${index}`}
                   className={`flex items-center bg-gray-700 px-4 py-3 rounded-full cursor-pointer hover:bg-gray-600 transition text-white ${
-                    parseInt(selectedAnswer) === index ? "border-2 border-green-500" : ""
+                    parseInt(selectedAnswer) === index
+                      ? "border-2 border-green-500"
+                      : ""
                   }`}
                 >
                   <input
@@ -186,7 +197,6 @@ export default function QuizPage() {
             Question {currentQuestionIndex + 1} of {questions.questions.length}
           </div>
         </div>
-
       </div>
     </>
   );
