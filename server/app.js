@@ -56,7 +56,6 @@ io.on("connection", (socket) => {
     scores[socket.username] = 0;
 
     playerCount++;
-
     if (playerCount === 1 || playerCount >= 3) {
       id = Math.round(Math.random() * 1000000);
       socket.room = id;
@@ -96,9 +95,10 @@ io.on("connection", (socket) => {
     };
 
     if (playerConnected == 2) {
-      console.log(question, "Questions");
+      let jsoncontent = JSON.parse(question);
+      console.log(jsoncontent, "Questions");
 
-      io.emit("sendquestions", question);
+      io.emit("sendquestions", jsoncontent);
       console.log("Player2");
     } else {
       console.log("Player1");
