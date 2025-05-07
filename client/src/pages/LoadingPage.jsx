@@ -1,11 +1,13 @@
 import { Navigate, useNavigate } from "react-router";
 import "../App.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import socket from "../lib/socket";
 import Swal from "sweetalert2";
+import ThemeContext from "../contexts/theme";
 export default function LoadingPage() {
   const navigate = useNavigate;
   const [players, setPlayers] = useState(null);
+  const context = useContext(ThemeContext)
 
   useEffect(() => {
     socket.auth = {
@@ -35,7 +37,7 @@ export default function LoadingPage() {
 
   if (players === null) {
     return (
-      <div className="w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative lightBackground">
+      <div className={`w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative ${context.theme}Background`}>
         <span className="loading loading-dots loading-xl"></span>;
       </div>
     );
@@ -70,17 +72,17 @@ export default function LoadingPage() {
 
   return (
     <>
-      <div className="w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative lightBackground">
+      <div className={`w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative ${context.theme}Background`}>
         <div
           id="overlay"
-          className="absolute inset-0 lightOverlay z-0 transition duration-500"
+          className={`absolute inset-0 ${context.theme}Overlay z-0 transition duration-500`}
         />
         {/* Snowfall container (will be filled by JS) */}
         <div id="snowfall-container" />
         {/* Result Container */}
         <div
           id="card"
-          className="bg-gray-900 border-[5px] border-orange-500 rounded-2xl p-10 w-[600px] text-center relative z-10 shadow-xl transition duration-500 text-white"
+          className={`border-[5px] rounded-2xl p-10 w-[600px] text-center relative z-10 shadow-xl transition duration-500 text-white ${context.theme}Card"`}
         >
           <div
             id="resultBadge"
