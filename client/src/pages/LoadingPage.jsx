@@ -16,9 +16,6 @@ export default function LoadingPage() {
     };
 
     socket.disconnect().connect();
-    // setPlayers([...players, socket.auth.username])
-
-    // socket.emit("addClient", socket.auth.username)
     socket.emit("addClient", socket.auth);
 
     socket.on("updatechat", (message) => {
@@ -28,7 +25,6 @@ export default function LoadingPage() {
     socket.on("users/info", (user) => {
       setPlayers(user);
     });
-    // console.log(user, "<<< user")
     return () => {
       socket.off("users/info");
       socket.off("updatechat");
