@@ -69,11 +69,11 @@ io.on("connection", (socket) => {
       playerConnected = 2;
     }
 
-		console.log(username + " joined to "+ id);
+		console.log(username + " joined to "+ socket.id);
 
     socket.emit("updatechat", "You are connected!", socket.id);
 
-		io.emit('updatechat', username + ' has joined to this game !',id);
+		io.emit('updatechat', username + ' has joined to this game !', socket.id);
 
     const users = await getOnlineUsers(io);
     io.emit("users/info", users);
