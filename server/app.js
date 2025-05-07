@@ -23,7 +23,6 @@ app.use(cors());
 
 app.use("/", require("./routers"));
 
-const usernames = {};
 const scores = {};
 
 async function getOnlineUsers(io) {
@@ -48,9 +47,11 @@ let playerConnected = 0;
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
-  socket.on("addClient", async function (username) {
-    socket.username = username;
-    usernames[username] = username;
+  socket.on("addClient", async function (users) {
+    const {username, id} = users;
+    users[username] = username;
+    users[id] = id;
+
     scores[socket.username] = 0;
 
     if (playerCount === 1 || playerCount >= 3) {
@@ -69,11 +70,11 @@ io.on("connection", (socket) => {
       playerConnected = 2;
     }
 
-		console.log(username + " joined to "+ socket.id);
+		console.log(username + " joined to "+ id);
 
-    socket.emit("updatechat", "You are connected!", socket.id);
+    socket.emit("updatechat", "You are connected!", id);
 
-		io.emit('updatechat', username + ' has joined to this game !', socket.id);
+		io.emit('updatechat', username + ' has joined to this game !', id);
 
     const users = await getOnlineUsers(io);
     io.emit("users/info", users);
