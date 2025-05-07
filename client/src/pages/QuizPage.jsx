@@ -6,6 +6,7 @@ import socket from "../lib/socket";
 import Card from "../components/Card";
 import { useTimer } from "use-timer";
 import ThemeContext from "../contexts/theme";
+import { Navigate } from "react-router";
 
 export default function QuizPage() {
   const [questions, setQuestions] = useState(null);
@@ -62,14 +63,16 @@ export default function QuizPage() {
       reset();
     } else {
       setIsQuizFinished(true);
+      <Navigate to={"/leaderboard"}/>
       reset();
 
-      Swal.fire({
-        title: "Quiz Finished!",
-        text: `Your final score: ${score}`,
-        icon: "success",
-        confirmButtonText: "OK",
-      });
+      // Swal.fire({
+      //   title: "Quiz Finished!",
+      //   text: `Your final score: ${score}`,
+      //   icon: "success",
+      //   confirmButtonText: "OK",
+      // });
+
     }
   };
 
@@ -152,8 +155,16 @@ export default function QuizPage() {
           My Score: <span id="score">{score}</span>
         </div>
         {/* Quiz Form */}
-
-        <div
+        <Card
+          context={context}
+          currentQuestion={currentQuestion}
+          selectedAnswer={selectedAnswer}
+          currentQuestionIndex={currentQuestionIndex}
+          handleSubmit={handleSubmit}
+          questions={questions}
+          setSelectedAnswer={setSelectedAnswer}
+        />
+        {/* <div
           id="card"
           className={`${context.theme}Card border-[5px] rounded-2xl p-10 w-[600px] text-center relative z-10 shadow-xl transition duration-500 text-white`}
         >
@@ -198,7 +209,7 @@ export default function QuizPage() {
           <div className="mt-4 text-sm">
             Question {currentQuestionIndex + 1} of {questions.questions.length}
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
