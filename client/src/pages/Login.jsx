@@ -12,7 +12,7 @@ export default function Login() {
         try {
             if(!username) throw {message: "Username is required"}
             localStorage.setItem("username", username)
-            navigate("/landing-page")
+            navigate("/waiting-room")
         } catch (error) {
             Swal.fire({
                 icon: "error",
