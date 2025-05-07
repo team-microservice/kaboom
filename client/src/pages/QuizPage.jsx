@@ -6,6 +6,7 @@ import socket from "../lib/socket";
 import Card from "../components/Card";
 import { useTimer } from "use-timer";
 import ThemeContext from "../contexts/theme";
+import { Navigate } from "react-router";
 
 export default function QuizPage() {
   const [questions, setQuestions] = useState(null);
@@ -62,14 +63,16 @@ export default function QuizPage() {
       reset();
     } else {
       setIsQuizFinished(true);
+      <Navigate to={"/leaderboard"}/>
       reset();
 
-      Swal.fire({
-        title: "Quiz Finished!",
-        text: `Your final score: ${score}`,
-        icon: "success",
-        confirmButtonText: "OK",
-      });
+      // Swal.fire({
+      //   title: "Quiz Finished!",
+      //   text: `Your final score: ${score}`,
+      //   icon: "success",
+      //   confirmButtonText: "OK",
+      // });
+
     }
   };
 
