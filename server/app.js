@@ -25,18 +25,36 @@ const usernames = {};
 const rooms = {};
 const scores = {};
 
+async function getOnlineUsers(io) {
+  const users = []
+
+  const sockets = await io.fetchSockets()
+  for (const socket of sockets) {
+    if (socket.handshake.auth?.username) {
+      users.push({
+        socketId: socket.id,
+        username: socket.handshake.auth?.username
+      })
+    }
+  }
+
+  return users
+}
+
 io.on('connection', (socket) => {
   console.log("New client connected:", socket.id);
   
-  socket.on('addClient', function(username) {
+  socket.on('addClient', async function(username) {
     socket.username = username;
     usernames[username] = username;
     scores[socket.username] = 0;
     socket.emit('updatechat', 'SERVER', 'You are connected!', socket.id);
+    const users = await getOnlineUsers(io)
+    io.emit('users/info', users);
   });
   
-  socket.on('result', function(data, roomId) {
-    io.to(roomId).emit('viewresult', data);
+  socket.on('result', function(data) {
+    io.emit('viewresult', data);
   });
   
   socket.on('disconnect', function() {
@@ -44,10 +62,6 @@ io.on('connection', (socket) => {
     if (socket.username) {
       delete usernames[socket.username];
       io.emit('updateusers', usernames);
-    }
-    
-    if (socket.roomId) {
-      socket.leave(socket.roomId);
     }
   });
 });
