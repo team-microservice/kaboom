@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "../App";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
+import ThemeContext from "../contexts/theme";
 
 export default function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
+  const contet = useContext(ThemeContext);
   const handleLogin = async (e) => {
     e.preventDefault();
 

@@ -65,7 +65,7 @@ export default function LoadingPage() {
       }
     });
 
-    return <Navigate to="/" />;
+    return <Navigate to="/quiz" />;
   }
 
   return (
@@ -149,7 +149,7 @@ export default function LoadingPage() {
           </div>
           <button
             id="playAgainButton"
-            onclick="playAgain()"
+            onClick="playAgain()"
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-10 rounded-full shadow-md transition duration-300 hidden"
           >
             PLAY AGAIN
