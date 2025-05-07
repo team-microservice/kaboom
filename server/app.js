@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const PORT = process.env.PORT || 3000;
+const { default: axios } = require("axios");
 const cors = require("cors");
 const express = require("express");
 const app = express();
@@ -48,7 +49,7 @@ io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
   socket.on("addClient", async function (users) {
-    const {username, id} = users;
+    const { username, id } = users;
     users[username] = username;
     users[id] = id;
 
@@ -70,14 +71,34 @@ io.on("connection", (socket) => {
       playerConnected = 2;
     }
 
-		console.log(username + " joined to "+ id);
+    console.log(username + " joined to " + id);
 
     socket.emit("updatechat", "You are connected!", id);
 
-		io.emit('updatechat', username + ' has joined to this game !', id);
+    io.emit("updatechat", username + " has joined to this game !", id);
 
     const user = await getOnlineUsers(io);
     io.emit("users/info", user);
+
+    const question = async () => {
+      try {
+        const result = await axios.get(
+          "https://gp.dhronz.space/gemini/generate-quiz"
+        );
+
+        return result;
+      } catch (error) {
+        console.error("Error fetching quiz data:", error);
+        return;
+      }
+    };
+
+    if (playerConnected == 2) {
+      io.emit("sendquestions", question);
+      console.log("Player2");
+    } else {
+      console.log("Player1");
+    }
   });
 
   socket.on("result", function (data) {
