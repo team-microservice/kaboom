@@ -85,9 +85,9 @@ io.on("connection", (socket) => {
     const result = await axios.get(
       "https://gp.dhronz.space/gemini/generate-quiz"
     );
-    console.log(result, "Result");
+    console.log(result.data.questions, "Result");
     
-    let jsoncontent = JSON.parse(result);
+    let jsoncontent = JSON.parse(result.data.questions);
 
     if (playerConnected == 2) {
       console.log(jsoncontent, "Questions");
