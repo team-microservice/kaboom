@@ -11,7 +11,7 @@ const initGemini = () => {
   return genAI;
 };
 
-const getGeminiModel = (modelName = "gemini-1.5-pro") => {
+const getGeminiModel = (modelName = "gemini-2.0-flash") => {
   const genAI = initGemini();
   return genAI.getGenerativeModel({ model: modelName });
 };
@@ -30,7 +30,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
  * @param {number} maxRetries - Maximum number of retries
  * @returns {Promise<string>} - The generated content
  */
-const generateContent = async (prompt, modelName = "gemini-1.5-pro", maxRetries = 3) => {
+const generateContent = async (prompt, modelName = "gemini-2.0-flash", maxRetries = 3) => {
   let retries = 0;
   
   while (true) {

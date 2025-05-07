@@ -1,6 +1,5 @@
 const { generateContent } = require("../helpers/gemini");
 
-// Fallback quiz data for when the API isn't available
 const fallbackQuizData = {
   "questions": [
     {
@@ -85,7 +84,6 @@ class GeminiController {
       } catch (error) {
         console.error("Error generating or parsing quiz:", error);
         
-        // Check if it's a rate limit error and use fallback
         if (error.isRateLimit || error.status === 429) {
           console.log("API rate limit exceeded. Using fallback quiz data.");
           return res.status(200).json({
@@ -95,7 +93,6 @@ class GeminiController {
           });
         }
         
-        // For parsing errors, try to use fallback
         if (error instanceof SyntaxError) {
           console.log("Failed to parse API response. Using fallback quiz data.");
           return res.status(200).json({
