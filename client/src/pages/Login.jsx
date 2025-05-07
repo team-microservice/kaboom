@@ -72,7 +72,7 @@ export default function Login() {
           id="card"
           className={`${context.theme}Card border-4 rounded-2xl p-10 w-1/2 text-center relative z-10 shadow-xl transition duration-500`}
         >
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow-md text-sm">
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-600 px-6 py-2 rounded-full font-bold shadow-md text-sm">
             WELCOME
           </div>
           <h2 id="title" className="text-2xl font-bold mb-6">
@@ -80,8 +80,11 @@ export default function Login() {
           </h2>
           <form onSubmit={handleLogin}>
             <div className="flex items-center bg-gray-100 rounded-full px-5 py-3 mb-6">
-              <i className="fas fa-user text-gray-500 text-lg mr-3" />
+              <i className="fas fa-user text-black text-lg mr-3" />
               <input
+              style={{
+                color: "black"
+              }}
                 type="text"
                 placeholder="Enter your username"
                 required=""
