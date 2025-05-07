@@ -85,21 +85,21 @@ io.on("connection", (socket) => {
     const result = await axios.get(
       "https://gp.dhronz.space/gemini/generate-quiz"
     );
-    console.log(result.data, "Result");
     const questions = result.data;
 
     if (playerConnected == 2) {
-      console.log(questions, "Questions");
-
       io.emit("sendquestions", questions);
-      console.log("Player2");
+      console.log("Player 2");
     } else {
-      console.log("Player1");
+      console.log("Player 1");
     }
   });
 
   socket.on("result", function (data) {
-    io.emit("viewresult", data);
+    io.emit("viewresult", {
+      score: data,
+      username: socket.handshake.auth.username,
+    });
   });
 
   socket.on("disconnect", function () {
