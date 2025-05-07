@@ -2,10 +2,6 @@ import { useState } from "react";
 import "../App";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
-import { useState } from "react";
-import "../App";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,7 +12,7 @@ export default function Login() {
     try {
       if (!username) throw { message: "Username is required" };
       localStorage.setItem("username", username);
-      navigate("/landing-page");
+      navigate("/waiting-room");
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -27,11 +23,11 @@ export default function Login() {
   };
 
   return (
-    <>
-      <>
+    <div>
+      <div className="w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative lightBackground">
         <div
           id="overlay"
-          className="absolute inset-0 bg-white bg-opacity-40 z-0 transition duration-500"
+          className="absolute inset-0 z-0 transition duration-500 lightOverlay"
         />
         <div id="snowfall-container" />
         {/* Toggle Button */}
@@ -44,15 +40,17 @@ export default function Login() {
         </button>
         <div
           id="card"
-          className="bg-white border-[5px] border-blue-400 rounded-2xl p-10 w-[500px] text-center relative z-10 shadow-xl transition duration-500"
+          className="bg-white border-4 border-blue-400 rounded-2xl p-10 w-1/2 text-center relative z-10 shadow-xl transition duration-500"
         >
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow-md text-sm">
             WELCOME
           </div>
           <h2 id="title" className="text-2xl font-bold text-gray-800 mb-6">
-            Just Play a Micro Service Quiz
+            Kaboom!
           </h2>
-          <form>
+          <form
+          onSubmit={handleLogin}
+          > 
             <div className="flex items-center bg-gray-100 rounded-full px-5 py-3 mb-6">
               <i className="fas fa-user text-gray-500 text-lg mr-3" />
               <input
@@ -60,6 +58,8 @@ export default function Login() {
                 placeholder="Enter your username"
                 required=""
                 className="bg-transparent focus:outline-none text-base w-full"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <button
@@ -70,7 +70,7 @@ export default function Login() {
             </button>
           </form>
         </div>
-      </>
-    </>
+      </div>
+    </div>
   );
 }
