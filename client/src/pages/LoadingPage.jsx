@@ -16,9 +16,6 @@ export default function LoadingPage() {
     };
 
     socket.disconnect().connect();
-    // setPlayers([...players, socket.auth.username])
-
-    // socket.emit("addClient", socket.auth.username)
     socket.emit("addClient", socket.auth);
 
     socket.on("updatechat", (message) => {
