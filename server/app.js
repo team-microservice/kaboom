@@ -76,8 +76,8 @@ io.on("connection", (socket) => {
 
 		io.emit('updatechat', username + ' has joined to this game !', id);
 
-    const users = await getOnlineUsers(io);
-    io.emit("users/info", users);
+    const user = await getOnlineUsers(io);
+    io.emit("users/info", user);
   });
 
   socket.on("result", function (data) {
@@ -89,8 +89,8 @@ io.on("connection", (socket) => {
     if (socket.username) {
       delete usernames[socket.username];
       io.emit("updateusers", usernames);
-      const users = getOnlineUsers(io);
-      io.emit("users/info", users);
+      const user = getOnlineUsers(io);
+      io.emit("users/info", user);
     }
   });
 });
