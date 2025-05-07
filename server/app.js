@@ -5,8 +5,8 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const server = createServer(app);
 const { createServer } = require("http");
+const server = createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
