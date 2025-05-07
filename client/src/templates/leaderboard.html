@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Leaderboard - Just Play</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: "Quicksand", sans-serif;
+        transition: background-image 0.5s ease-in-out;
+      }
+
+      /* Snowfall animation */
+      .snowflake {
+        position: fixed;
+        top: -10px;
+        color: white;
+        font-size: 1em;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+        user-select: none;
+        z-index: 1;
+        pointer-events: none;
+        animation: fall linear forwards;
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(105vh);
+        }
+      }
+    </style>
+  </head>
+  <body
+    id="body"
+    class="min-h-screen bg-cover bg-center flex items-center justify-center relative"
+    style="
+      background-image: url('https://4kwallpapers.com/images/walls/thumbs_3t/4584.png');
+    "
+  >
+    <!-- Overlay -->
+    <div
+      id="overlay"
+      class="absolute inset-0 bg-black bg-opacity-40 z-0 transition duration-500"
+    ></div>
+
+    <!-- Snowfall container (will be filled by JS) -->
+    <div id="snowfall-container"></div>
+
+    <!-- Toggle Button -->
+    <button
+      id="toggleMode"
+      class="absolute top-6 left-1/2 transform -translate-x-1/2 z-20 bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-700 transition"
+    >
+      Light Mode
+    </button>
+
+    <!-- Back Button (top-left) -->
+    <div class="absolute top-5 left-5 z-10">
+      <button
+        onclick="history.back()"
+        class="bg-white bg-opacity-90 px-4 py-2 rounded-full shadow-md font-semibold text-red-600 hover:bg-opacity-100 transition"
+        id="backButton"
+      >
+        ← Back to Home
+      </button>
+    </div>
+
+    <!-- Leaderboard Box -->
+    <div
+      id="card"
+      class="bg-gray-900 border-[5px] border-orange-500 rounded-2xl p-10 w-[600px] text-center relative z-10 shadow-xl transition duration-500 text-white"
+    >
+      <div
+        class="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow-md text-sm"
+      >
+        LEADERBOARD
+      </div>
+      <h2 id="title" class="text-2xl font-bold mb-6">Top Players</h2>
+      <div class="text-left space-y-4">
+        <!-- Player Row Example -->
+        <div
+          class="flex justify-between bg-gray-700 rounded-full px-6 py-3 shadow playerRow transition duration-500"
+        >
+          <span class="font-semibold text-white">1. Arya</span>
+          <span class="text-green-400 font-bold">150 pts</span>
+        </div>
+        <div
+          class="flex justify-between bg-gray-700 rounded-full px-6 py-3 shadow playerRow transition duration-500"
+        >
+          <span class="font-semibold text-white">2. Bella</span>
+          <span class="text-green-400 font-bold">130 pts</span>
+        </div>
+        <div
+          class="flex justify-between bg-gray-700 rounded-full px-6 py-3 shadow playerRow transition duration-500"
+        >
+          <span class="font-semibold text-white">3. Chandra</span>
+          <span class="text-green-400 font-bold">120 pts</span>
+        </div>
+        <div
+          class="flex justify-between bg-gray-700 rounded-full px-6 py-3 shadow playerRow transition duration-500"
+        >
+          <span class="font-semibold text-white">4. Diah</span>
+          <span class="text-green-400 font-bold">100 pts</span>
+        </div>
+        <div
+          class="flex justify-between bg-gray-700 rounded-full px-6 py-3 shadow playerRow transition duration-500"
+        >
+          <span class="font-semibold text-white">5. Edo</span>
+          <span class="text-green-400 font-bold">90 pts</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Dark/Light mode elements
+      const toggleBtn = document.getElementById("toggleMode");
+      const card = document.getElementById("card");
+      const title = document.getElementById("title");
+      const overlay = document.getElementById("overlay");
+      const body = document.getElementById("body");
+      const backButton = document.getElementById("backButton");
+      const playerRows = document.querySelectorAll(".playerRow");
+
+      let isDark = true; // Start with dark mode by default
+
+      // Mode toggle function
+      toggleBtn.addEventListener("click", () => {
+        isDark = !isDark;
+
+        if (isDark) {
+          // Dark mode styles
+          body.style.backgroundImage =
+            "url('https://4kwallpapers.com/images/walls/thumbs_3t/4584.png')";
+          overlay.classList.replace("bg-white", "bg-black");
+          overlay.classList.replace("bg-opacity-20", "bg-opacity-40");
+
+          card.classList.remove("bg-white", "border-blue-400");
+          card.classList.add("bg-gray-900", "border-orange-500", "text-white");
+
+          title.classList.remove("text-gray-800");
+          title.classList.add("text-white");
+
+          // Update player rows
+          playerRows.forEach((row) => {
+            row.classList.remove("bg-gray-100");
+            row.classList.add("bg-gray-700");
+
+            // Update player name color
+            const nameSpan = row.querySelector("span:first-child");
+            nameSpan.classList.remove("text-gray-800");
+            nameSpan.classList.add("text-white");
+
+            // Update score color
+            const scoreSpan = row.querySelector("span:last-child");
+            scoreSpan.classList.remove("text-green-600");
+            scoreSpan.classList.add("text-green-400");
+          });
+
+          toggleBtn.textContent = "Light Mode";
+        } else {
+          // Light mode styles
+          body.style.backgroundImage =
+            "url('https://4kwallpapers.com/images/walls/thumbs_3t/4587.png')";
+          overlay.classList.replace("bg-black", "bg-white");
+          overlay.classList.replace("bg-opacity-40", "bg-opacity-20");
+
+          card.classList.remove(
+            "bg-gray-900",
+            "border-orange-500",
+            "text-white"
+          );
+          card.classList.add("bg-white", "border-blue-400");
+
+          title.classList.remove("text-white");
+          title.classList.add("text-gray-800");
+
+          // Update player rows
+          playerRows.forEach((row) => {
+            row.classList.remove("bg-gray-700");
+            row.classList.add("bg-gray-100");
+
+            // Update player name color
+            const nameSpan = row.querySelector("span:first-child");
+            nameSpan.classList.remove("text-white");
+            nameSpan.classList.add("text-gray-800");
+
+            // Update score color
+            const scoreSpan = row.querySelector("span:last-child");
+            scoreSpan.classList.remove("text-green-400");
+            scoreSpan.classList.add("text-green-600");
+          });
+
+          toggleBtn.textContent = "Dark Mode";
+        }
+      });
+
+      // Snowfall effect
+      function createSnowflake() {
+        const snowflake = document.createElement("div");
+        snowflake.classList.add("snowflake");
+        snowflake.textContent = "❄";
+
+        // Random properties for natural look
+        const size = Math.random() * 1 + 0.5; // Snowflake size between 0.5em and 1.5em
+        const startPositionX = Math.random() * 100; // X position from 0% to 100%
+        const duration = Math.random() * 5 + 5; // Fall duration between 5s and 10s
+        const opacity = Math.random() * 0.6 + 0.4; // Opacity between 0.4 and 1
+
+        // Apply random styles
+        snowflake.style.left = `${startPositionX}%`;
+        snowflake.style.fontSize = `${size}em`;
+        snowflake.style.opacity = opacity;
+        snowflake.style.animationDuration = `${duration}s`;
+
+        // Add to DOM
+        document.body.appendChild(snowflake);
+
+        // Remove after animation completes
+        setTimeout(() => {
+          snowflake.remove();
+        }, duration * 1000);
+      }
+
+      // Create snowflakes at intervals
+      setInterval(createSnowflake, 200); // New snowflake every 200ms
+
+      // Create initial batch of snowflakes
+      for (let i = 0; i < 20; i++) {
+        setTimeout(createSnowflake, 100 * i);
+      }
+    </script>
+  </body>
+</html>
