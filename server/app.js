@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
   socket.on("addClient", async function (users) {
-    const { username, id } = users;
+    let { username, id } = users;
     users[username] = username;
     users[id] = id;
 
