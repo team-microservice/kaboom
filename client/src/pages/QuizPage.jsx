@@ -1,10 +1,11 @@
 import Swal from "sweetalert2";
 import "../App.css";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import socket from "../lib/socket";
 import Card from "../components/Card";
 import { useTimer } from "use-timer";
+import ThemeContext from "../contexts/theme";
 
 export default function QuizPage() {
   const [questions, setQuestions] = useState(null);
@@ -13,6 +14,7 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
   const [isQuizFinished, setIsQuizFinished] = useState(false);
+  const context = useContext(ThemeContext)
 
   const { time, start, reset, pause } = useTimer({
     initialTime: 10,
@@ -106,7 +108,7 @@ export default function QuizPage() {
 
   if (!questions) {
     return (
-      <div className="w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative lightBackground">
+      <div className={`w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative ${context.theme}Background`}>
         <div className="text-2xl font-bold text-white">
           Loading questions...
         </div>
@@ -118,10 +120,10 @@ export default function QuizPage() {
 
   return (
     <>
-      <div className="w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative lightBackground">
+      <div className={`w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative ${context.theme}Background`}>
         <div
           id="overlay"
-          className="absolute inset-0 bg-black bg-opacity-40 z-0 transition duration-500 lightOverlay"
+          className={`absolute inset-0 bg-black bg-opacity-40 z-0 transition duration-500 ${context.theme}Overlay`}
         />
         {/* Snowfall container (will be filled by JS) */}
         <div id="snowfall-container" />
@@ -153,7 +155,7 @@ export default function QuizPage() {
 
         <div
           id="card"
-          className="bg-gray-900 border-[5px] border-orange-500 rounded-2xl p-10 w-[600px] text-center relative z-10 shadow-xl transition duration-500 text-white"
+          className={`${context.theme}Card border-[5px] rounded-2xl p-10 w-[600px] text-center relative z-10 shadow-xl transition duration-500 text-white`}
         >
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow-md text-sm">
             QUIZ TIME
@@ -187,7 +189,7 @@ export default function QuizPage() {
             </div>
             <button
               type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-10 rounded-full shadow-md transition duration-300"
+              className="btn btn-success btn-active"
               disabled={!selectedAnswer}
             >
               SUBMIT
