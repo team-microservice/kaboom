@@ -81,21 +81,12 @@ io.on("connection", (socket) => {
     const user = await getOnlineUsers(io);
     io.emit("users/info", user);
 
-    const question = async () => {
-      try {
-        const result = await axios.get(
-          "https://gp.dhronz.space/gemini/generate-quiz"
-        );
-
-        return result;
-      } catch (error) {
-        console.error("Error fetching quiz data:", error);
-        return;
-      }
-    };
+    const result = await axios.get(
+      "https://gp.dhronz.space/gemini/generate-quiz"
+    );
+    let jsoncontent = JSON.parse(result);
 
     if (playerConnected == 2) {
-      let jsoncontent = JSON.parse(question);
       console.log(jsoncontent, "Questions");
 
       io.emit("sendquestions", jsoncontent);
