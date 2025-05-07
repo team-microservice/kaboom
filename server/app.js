@@ -55,6 +55,8 @@ io.on("connection", (socket) => {
 
     scores[socket.username] = 0;
 
+    playerCount++;
+
     if (playerCount === 1 || playerCount >= 3) {
       id = Math.round(Math.random() * 1000000);
       socket.room = id;
