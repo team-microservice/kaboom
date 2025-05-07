@@ -42,6 +42,9 @@ async function getOnlineUsers(io) {
   return users;
 }
 
+let playerCount = 0;
+let playerConnected = 0;
+
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
@@ -49,7 +52,29 @@ io.on("connection", (socket) => {
     socket.username = username;
     usernames[username] = username;
     scores[socket.username] = 0;
+
+    if (playerCount === 1 || playerCount >= 3) {
+      id = Math.round(Math.random() * 1000000);
+      socket.room = id;
+      playerCount = 1;
+
+      console.log(playerCount + " " + id);
+
+      socket.join(id);
+      playerConnected = 1;
+    } else if (playerCount === 2) {
+      console.log(playerCount + " " + id);
+
+      socket.join(id);
+      playerConnected = 2;
+    }
+
+		console.log(username + " joined to "+ id);
+
     socket.emit("updatechat", "You are connected!", socket.id);
+
+		io.emit('updatechat', username + ' has joined to this game !',id);
+
     const users = await getOnlineUsers(io);
     io.emit("users/info", users);
   });
