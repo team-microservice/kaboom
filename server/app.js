@@ -86,13 +86,12 @@ io.on("connection", (socket) => {
       "https://gp.dhronz.space/gemini/generate-quiz"
     );
     console.log(result.data, "Result");
-
-    let jsoncontent = JSON.parse(result.data);
+    const questions = result.data;
 
     if (playerConnected == 2) {
-      console.log(jsoncontent, "Questions");
+      console.log(questions, "Questions");
 
-      io.emit("sendquestions", jsoncontent);
+      io.emit("sendquestions", questions);
       console.log("Player2");
     } else {
       console.log("Player1");
