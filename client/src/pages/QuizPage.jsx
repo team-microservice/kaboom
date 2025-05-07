@@ -8,7 +8,7 @@ export default function QuizPage() {
         try {
             const response = await axios({
                 method: "POST",
-                url: "http://localhost:3000/generate-quiz"
+                url: "http://localhost:3000/gemini/generate-quiz"
 
             })
 
