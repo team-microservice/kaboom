@@ -25,7 +25,6 @@ export default function LoadingPage() {
     socket.on("users/info", (user) => {
       setPlayers(user);
     });
-    // console.log(user, "<<< user")
     return () => {
       socket.off("users/info");
       socket.off("updatechat");
