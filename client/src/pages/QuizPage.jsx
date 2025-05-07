@@ -129,7 +129,6 @@ export default function QuizPage() {
           id="overlay"
           className={`absolute inset-0 bg-black bg-opacity-40 z-0 transition duration-500 ${context.theme}Overlay`}
         />
-        {/* Snowfall container (will be filled by JS) */}
         <div id="snowfall-container" />
 
         {/* Timer */}

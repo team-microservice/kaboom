@@ -5,7 +5,6 @@ import socket from "../lib/socket";
 import Swal from "sweetalert2";
 import ThemeContext from "../contexts/theme";
 export default function LoadingPage() {
-  const navigate = useNavigate;
   const [players, setPlayers] = useState(null);
   const context = useContext(ThemeContext)
 
@@ -57,7 +56,6 @@ export default function LoadingPage() {
         clearInterval(timerInterval);
       },
     }).then((result) => {
-      /* Read more about handling dismissals below */
       if (result.dismiss === Swal.DismissReason.timer) {
         console.log("I was closed by the timer");
       }
