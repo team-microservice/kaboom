@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
     socket.username = username;
     usernames[username] = username;
     scores[socket.username] = 0;
-    socket.emit("updatechat", "SERVER", "You are connected!", socket.id);
+    socket.emit("updatechat", "You are connected!", socket.id);
     const users = await getOnlineUsers(io);
     io.emit("users/info", users);
   });
