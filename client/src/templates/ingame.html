@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>quiz</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: "Quicksand", sans-serif;
+        transition: background-image 0.5s ease-in-out;
+      }
+
+      /* Snowfall animation */
+      .snowflake {
+        position: fixed;
+        top: -10px;
+        color: white;
+        font-size: 1em;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+        user-select: none;
+        z-index: 1;
+        pointer-events: none;
+        animation: fall linear forwards;
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(105vh);
+        }
+      }
+    </style>
+  </head>
+  <body
+    id="body"
+    class="min-h-screen bg-cover bg-center flex items-center justify-center relative"
+    style="
+      background-image: url('https://4kwallpapers.com/images/walls/thumbs_3t/4584.png');
+    "
+  >
+    <!-- Overlay -->
+    <div
+      id="overlay"
+      class="absolute inset-0 bg-black bg-opacity-40 z-0 transition duration-500"
+    ></div>
+
+    <!-- Snowfall container (will be filled by JS) -->
+    <div id="snowfall-container"></div>
+
+    <!-- Toggle Button -->
+    <button
+      id="toggleMode"
+      class="absolute top-6 left-1/2 transform -translate-x-1/2 z-20 bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-700 transition"
+    >
+      Light Mode
+    </button>
+
+    <!-- Opponent Score (top-left) -->
+    <div class="absolute top-5 left-5 z-10">
+      <div
+        id="opponentScoreDiv"
+        class="bg-white bg-opacity-90 px-4 py-2 rounded-full shadow-md font-semibold text-red-600 transition duration-500"
+      >
+        Opponent Score: <span id="opponentScore">0</span>
+      </div>
+    </div>
+
+    <!-- My Score (top-right) -->
+    <div
+      id="myScoreDiv"
+      class="absolute top-5 right-5 z-10 bg-white bg-opacity-90 px-4 py-2 rounded-full shadow-md font-semibold text-green-700 transition duration-500"
+    >
+      My Score: <span id="score">0</span>
+    </div>
+
+    <!-- Quiz Form -->
+    <div
+      id="card"
+      class="bg-gray-900 border-[5px] border-orange-500 rounded-2xl p-10 w-[600px] text-center relative z-10 shadow-xl transition duration-500 text-white"
+    >
+      <div
+        class="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow-md text-sm"
+      >
+        QUIZ TIME
+      </div>
+      <h2 id="title" class="text-2xl font-bold mb-6">
+        What's the capital of Indonesia?
+      </h2>
+      <form id="quizForm">
+        <div class="grid grid-cols-2 gap-4 mb-6 text-left">
+          <label
+            id="answerA"
+            class="flex items-center bg-gray-700 px-4 py-3 rounded-full cursor-pointer hover:bg-gray-600 transition text-white"
+          >
+            <input type="radio" name="answer" value="A" class="mr-2" />
+            A. Jakarta
+          </label>
+          <label
+            id="answerB"
+            class="flex items-center bg-gray-700 px-4 py-3 rounded-full cursor-pointer hover:bg-gray-600 transition text-white"
+          >
+            <input type="radio" name="answer" value="B" class="mr-2" />
+            B. Bandung
+          </label>
+          <label
+            id="answerC"
+            class="flex items-center bg-gray-700 px-4 py-3 rounded-full cursor-pointer hover:bg-gray-600 transition text-white"
+          >
+            <input type="radio" name="answer" value="C" class="mr-2" />
+            C. Surabaya
+          </label>
+          <label
+            id="answerD"
+            class="flex items-center bg-gray-700 px-4 py-3 rounded-full cursor-pointer hover:bg-gray-600 transition text-white"
+          >
+            <input type="radio" name="answer" value="D" class="mr-2" />
+            D. Medan
+          </label>
+        </div>
+        <button
+          type="submit"
+          class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-10 rounded-full shadow-md transition duration-300"
+        >
+          SUBMIT
+        </button>
+      </form>
+
+      <div
+        id="result"
+        class="mt-4 text-lg font-semibold text-blue-300 hidden"
+      ></div>
+    </div>
+
+    <script>
+      const form = document.getElementById("quizForm");
+      const resultDiv = document.getElementById("result");
+      const scoreSpan = document.getElementById("score");
+      const opponentScoreSpan = document.getElementById("opponentScore");
+      let score = 0;
+      let opponentScore = 0;
+
+      // Dark/Light mode elements
+      const toggleBtn = document.getElementById("toggleMode");
+      const card = document.getElementById("card");
+      const title = document.getElementById("title");
+      const overlay = document.getElementById("overlay");
+      const body = document.getElementById("body");
+      const answerA = document.getElementById("answerA");
+      const answerB = document.getElementById("answerB");
+      const answerC = document.getElementById("answerC");
+      const answerD = document.getElementById("answerD");
+      const opponentScoreDiv = document.getElementById("opponentScoreDiv");
+      const myScoreDiv = document.getElementById("myScoreDiv");
+
+      let isDark = true; // Start with dark mode by default
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const answer = form.answer.value;
+        if (!answer) {
+          resultDiv.textContent = "Please select an answer.";
+          resultDiv.classList.remove("hidden");
+          return;
+        }
+
+        if (answer === "A") {
+          resultDiv.textContent = "Correct! 🎉 Jakarta is the capital.";
+          score += 10;
+        } else {
+          resultDiv.textContent = "Wrong answer. Try again!";
+        }
+
+        scoreSpan.textContent = score;
+        resultDiv.classList.remove("hidden");
+      });
+
+      // Mode toggle function
+      toggleBtn.addEventListener("click", () => {
+        isDark = !isDark;
+
+        if (isDark) {
+          // Dark mode styles
+          body.style.backgroundImage =
+            "url('https://4kwallpapers.com/images/walls/thumbs_3t/4584.png')";
+          overlay.classList.replace("bg-white", "bg-black");
+          overlay.classList.replace("bg-opacity-20", "bg-opacity-40");
+
+          card.classList.remove("bg-white", "border-blue-400");
+          card.classList.add("bg-gray-900", "border-orange-500", "text-white");
+
+          // Update answer options
+          answerA.classList.remove(
+            "bg-gray-100",
+            "hover:bg-gray-200",
+            "text-black"
+          );
+          answerB.classList.remove(
+            "bg-gray-100",
+            "hover:bg-gray-200",
+            "text-black"
+          );
+          answerC.classList.remove(
+            "bg-gray-100",
+            "hover:bg-gray-200",
+            "text-black"
+          );
+          answerD.classList.remove(
+            "bg-gray-100",
+            "hover:bg-gray-200",
+            "text-black"
+          );
+
+          answerA.classList.add(
+            "bg-gray-700",
+            "hover:bg-gray-600",
+            "text-white"
+          );
+          answerB.classList.add(
+            "bg-gray-700",
+            "hover:bg-gray-600",
+            "text-white"
+          );
+          answerC.classList.add(
+            "bg-gray-700",
+            "hover:bg-gray-600",
+            "text-white"
+          );
+          answerD.classList.add(
+            "bg-gray-700",
+            "hover:bg-gray-600",
+            "text-white"
+          );
+
+          // Update score displays
+          opponentScoreDiv.classList.remove("bg-gray-200");
+          myScoreDiv.classList.remove("bg-gray-200");
+          opponentScoreDiv.classList.add("bg-white");
+          myScoreDiv.classList.add("bg-white");
+
+          // Update result color
+          resultDiv.classList.remove("text-blue-700");
+          resultDiv.classList.add("text-blue-300");
+
+          toggleBtn.textContent = "Light Mode";
+        } else {
+          // Light mode styles
+          body.style.backgroundImage =
+            "url('https://4kwallpapers.com/images/walls/thumbs_3t/4587.png')";
+          overlay.classList.replace("bg-black", "bg-white");
+          overlay.classList.replace("bg-opacity-40", "bg-opacity-20");
+
+          card.classList.remove(
+            "bg-gray-900",
+            "border-orange-500",
+            "text-white"
+          );
+          card.classList.add("bg-white", "border-blue-400");
+
+          // Update answer options
+          answerA.classList.remove(
+            "bg-gray-700",
+            "hover:bg-gray-600",
+            "text-white"
+          );
+          answerB.classList.remove(
+            "bg-gray-700",
+            "hover:bg-gray-600",
+            "text-white"
+          );
+          answerC.classList.remove(
+            "bg-gray-700",
+            "hover:bg-gray-600",
+            "text-white"
+          );
+          answerD.classList.remove(
+            "bg-gray-700",
+            "hover:bg-gray-600",
+            "text-white"
+          );
+
+          answerA.classList.add(
+            "bg-gray-100",
+            "hover:bg-gray-200",
+            "text-black"
+          );
+          answerB.classList.add(
+            "bg-gray-100",
+            "hover:bg-gray-200",
+            "text-black"
+          );
+          answerC.classList.add(
+            "bg-gray-100",
+            "hover:bg-gray-200",
+            "text-black"
+          );
+          answerD.classList.add(
+            "bg-gray-100",
+            "hover:bg-gray-200",
+            "text-black"
+          );
+
+          // Update score displays
+          opponentScoreDiv.classList.remove("bg-white");
+          myScoreDiv.classList.remove("bg-white");
+          opponentScoreDiv.classList.add("bg-gray-200");
+          myScoreDiv.classList.add("bg-gray-200");
+
+          // Update result color
+          resultDiv.classList.remove("text-blue-300");
+          resultDiv.classList.add("text-blue-700");
+
+          toggleBtn.textContent = "Dark Mode";
+        }
+      });
+
+      // Snowfall effect
+      function createSnowflake() {
+        const snowflake = document.createElement("div");
+        snowflake.classList.add("snowflake");
+        snowflake.textContent = "❄";
+
+        // Random properties for natural look
+        const size = Math.random() * 1 + 0.5; // Snowflake size between 0.5em and 1.5em
+        const startPositionX = Math.random() * 100; // X position from 0% to 100%
+        const duration = Math.random() * 5 + 5; // Fall duration between 5s and 10s
+        const opacity = Math.random() * 0.6 + 0.4; // Opacity between 0.4 and 1
+
+        // Apply random styles
+        snowflake.style.left = `${startPositionX}%`;
+        snowflake.style.fontSize = `${size}em`;
+        snowflake.style.opacity = opacity;
+        snowflake.style.animationDuration = `${duration}s`;
+
+        // Add to DOM
+        document.body.appendChild(snowflake);
+
+        // Remove after animation completes
+        setTimeout(() => {
+          snowflake.remove();
+        }, duration * 1000);
+      }
+
+      // Create snowflakes at intervals
+      setInterval(createSnowflake, 200); // New snowflake every 200ms
+
+      // Create initial batch of snowflakes
+      for (let i = 0; i < 20; i++) {
+        setTimeout(createSnowflake, 100 * i);
+      }
+    </script>
+  </body>
+</html>

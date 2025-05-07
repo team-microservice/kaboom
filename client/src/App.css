@@ -1,2 +1,11 @@
 @import 'tailwindcss';
 @plugin 'daisyui';
+
+
+.bgimg {
+    background-image: url("https://4kwallpapers.com/images/walls/thumbs_2t/4592.png");
+    /* width: ; */
+    /* background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat; */
+}
