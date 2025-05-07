@@ -9,7 +9,7 @@ export default ThemeContext
 export function ThemeProvider(props) {
     const [theme, setTheme] = useState("dark")
     const toggleTheme = () => {
-        setTheme(theme === "light" ? "light" : "dark")
+        setTheme(theme === "light" ? "dark" : "light")
     }
 
     return (

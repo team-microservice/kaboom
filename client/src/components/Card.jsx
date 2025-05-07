@@ -1,6 +1,7 @@
 import "../App.css"
 
-export default function Card() {
+export default function Card(props) {
+    // const {}
     return(
         <>
             <div

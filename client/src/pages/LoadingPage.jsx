@@ -77,13 +77,6 @@ export default function LoadingPage() {
         />
         {/* Snowfall container (will be filled by JS) */}
         <div id="snowfall-container" />
-        {/* Toggle Button */}
-        <button
-          id="toggleMode"
-          className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20 bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-700 transition"
-        >
-          Light Mode
-        </button>
         {/* Result Container */}
         <div
           id="card"

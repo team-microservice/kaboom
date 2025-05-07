@@ -3,7 +3,9 @@ import "../App.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import socket from "../lib/socket";
+import Card from "../components/Card";
 import { useTimer } from "use-timer";
+
 
 export default function QuizPage() {
   const [questions, setQuestions] = useState(null);
@@ -120,21 +122,7 @@ export default function QuizPage() {
         />
         {/* Snowfall container (will be filled by JS) */}
         <div id="snowfall-container" />
-        {/* Toggle Button */}
-        <button
-          id="toggleMode"
-          className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20 bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-700 transition"
-        >
-          Light Mode
-        </button>
-        
-        {/* Timer */}
-        <div className="absolute top-5 w-20 left-1/2 transform -translate-x-1/2 mt-12 z-10">
-          <div className="bg-red-600 text-white px-4 py-2 rounded-full text-center font-bold">
-            {time}s
-          </div>
-        </div>
-        
+          
         {/* Opponent Score (top-left) */}
         <div className="absolute top-5 left-5 z-10">
           <div
@@ -152,6 +140,8 @@ export default function QuizPage() {
           My Score: <span id="score">{score}</span>
         </div>
         {/* Quiz Form */}
+
+
         <div
           id="card"
           className="bg-gray-900 border-[5px] border-orange-500 rounded-2xl p-10 w-[600px] text-center relative z-10 shadow-xl transition duration-500 text-white"
@@ -196,6 +186,7 @@ export default function QuizPage() {
             Question {currentQuestionIndex + 1} of {questions.questions.length}
           </div>
         </div>
+
       </div>
     </>
   );

@@ -30,6 +30,18 @@ body {
         opacity: 0.6;
       }
 
+      .lightCard {
+        background-color: white;
+        border-color: #51a2ff;
+        color: #101828;
+      }
+
+      .darkCard {
+        background-color: #101828;
+        border-color: #ff6900;
+        color: aliceblue;
+      }
+
       .snowflake {
         position: fixed;
         top: -10px;
