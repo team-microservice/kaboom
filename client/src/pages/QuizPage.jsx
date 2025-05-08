@@ -16,6 +16,7 @@ export default function QuizPage() {
   const [isQuizFinished, setIsQuizFinished] = useState(false);
   const [redirectToLeaderboard, setRedirectToLeaderboard] = useState(false);
   const context = useContext(ThemeContext);
+  const maxTime = 10;
 
   useEffect(() => {
     const savedQuizData = localStorage.getItem('quizData');
@@ -43,13 +44,15 @@ export default function QuizPage() {
   }, [questions, currentQuestionIndex, score, opponentScore, isQuizFinished]);
 
   const { time, start, reset, pause } = useTimer({
-    initialTime: 10,
+    initialTime: maxTime,
     timerType: "DECREMENTAL",
     endTime: 0,
     onTimeOver: () => {
       handleNextQuestion();
     },
   });
+
+  const timerProgressPercentage = (time / maxTime) * 100;
 
   useEffect(() => {
     socket.disconnect().connect();
@@ -158,13 +161,6 @@ export default function QuizPage() {
         />
         <div id="snowfall-container" />
 
-        {/* Timer */}
-        <div className="absolute top-5 w-20 left-1/2 transform -translate-x-1/2 mt-12 z-10">
-          <div className="bg-red-600 text-white px-4 py-2 rounded-full text-center font-bold">
-            {time}s
-          </div>
-        </div>
-
         {/* Opponent Score (top-left) */}
         <div className="absolute top-5 left-5 z-10">
           <div
@@ -191,6 +187,14 @@ export default function QuizPage() {
           questions={questions}
           setSelectedAnswer={setSelectedAnswer}
         />
+
+        {/* Timer Progress Bar di bawah halaman */}
+        <div className="absolute bottom-0 left-0 right-0 h-3 z-20 bg-gray-200">
+          <div 
+            className="h-full bg-red-600 transition-all duration-1000 ease-linear"
+            style={{ width: `${timerProgressPercentage}%` }}
+          />
+        </div>
       </div>
     </>
   );
