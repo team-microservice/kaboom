@@ -12,6 +12,8 @@ export default function Login() {
 
 
   useEffect(() => {
+    localStorage.clear();
+    localStorage.setItem("theme", "dark")
     const mainSound = new Audio("/happy.mp3");
     mainSound.loop = true;
     mainSound.volume = 0.5;
