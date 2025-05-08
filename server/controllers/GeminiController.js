@@ -66,7 +66,7 @@ class GeminiController {
         return res.status(200).json(fallbackQuizData);
       }
       
-      const prompt = `Generate 10 multiple-choice questions about Indonesia in Bahasa Indonesia. 
+      const prompt = `Generate 10 multiple-choice questions about random fun facts in this world in Bahasa Indonesia. 
           For each question, provide 4 options and indicate the index (0-based) of the correct answer.
           Format the response as a JSON object with this exact structure:
           {
