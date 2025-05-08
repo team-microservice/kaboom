@@ -3,17 +3,20 @@ import "../App";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import ThemeContext from "../contexts/theme";
+import AuthContext from "../contexts/auth";
 
 export default function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const context = useContext(ThemeContext);
+  const { login } = useContext(AuthContext);
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
       if (!username) throw { message: "Username is required" };
-      localStorage.setItem("username", username);
+      login(username);
       navigate("/waiting-room");
     } catch (error) {
       Swal.fire({

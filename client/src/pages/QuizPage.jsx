@@ -1,6 +1,5 @@
 import Swal from "sweetalert2";
 import "../App.css";
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import socket from "../lib/socket";
 import Card from "../components/Card";
@@ -17,6 +16,31 @@ export default function QuizPage() {
   const [isQuizFinished, setIsQuizFinished] = useState(false);
   const [redirectToLeaderboard, setRedirectToLeaderboard] = useState(false);
   const context = useContext(ThemeContext);
+
+  useEffect(() => {
+    const savedQuizData = localStorage.getItem('quizData');
+    if (savedQuizData) {
+      const data = JSON.parse(savedQuizData);
+      setQuestions(data.questions);
+      setCurrentQuestionIndex(data.currentQuestionIndex || 0);
+      setScore(data.score || 0);
+      setOpponentScore(data.opponentScore || 0);
+      setIsQuizFinished(data.isQuizFinished || false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (questions) {
+      const dataToSave = {
+        questions,
+        currentQuestionIndex,
+        score,
+        opponentScore,
+        isQuizFinished
+      };
+      localStorage.setItem('quizData', JSON.stringify(dataToSave));
+    }
+  }, [questions, currentQuestionIndex, score, opponentScore, isQuizFinished]);
 
   const { time, start, reset, pause } = useTimer({
     initialTime: 10,
@@ -68,6 +92,7 @@ export default function QuizPage() {
       setIsQuizFinished(true);
       setRedirectToLeaderboard(true);
       reset();
+      localStorage.removeItem('quizData');
     }
   };
 
