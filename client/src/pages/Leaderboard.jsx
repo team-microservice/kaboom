@@ -11,6 +11,13 @@ export default function Leaderboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const leaderboardSound = new Audio("/leaderboard.mp3");
+    leaderboardSound.loop = true;
+    leaderboardSound.volume = 0.5;
+
+    leaderboardSound.play().catch((err) => {
+      console.warn("Autoplay diblokir browser:", err);
+    });
     socket.on("leaderboard/update", (data) => {
       setPlayers(data);
     });
@@ -18,6 +25,8 @@ export default function Leaderboard() {
     socket.emit("leaderboard/request");
 
     return () => {
+      leaderboardSound.pause();
+      leaderboardSound.currentTime = 0;
       socket.off("leaderboard/update");
     };
   }, []);
@@ -29,7 +38,7 @@ export default function Leaderboard() {
       >
         <div
           id="overlay"
-          className={`absolute inset-0 z-0 transition duration-500 ${context.theme}Overlay`}    
+          className={`absolute inset-0 z-0 transition duration-500 ${context.theme}Overlay`}
         ></div>
         <div id="snowfall-container" />
         <div className="absolute top-5 left-5 z-10">
@@ -53,9 +62,16 @@ export default function Leaderboard() {
           </h2>
           <div className="text-left space-y-4">
             {players.map((player, index) => (
-              <div key={index} className="flex justify-between bg-gray-700 rounded-full px-6 py-3 shadow playerRow transition duration-500">
-                <span className="font-semibold text-white">{index + 1}. {player.username}</span>
-                <span className="text-green-400 font-bold">{player.score} pts</span>
+              <div
+                key={index}
+                className="flex justify-between bg-gray-700 rounded-full px-6 py-3 shadow playerRow transition duration-500"
+              >
+                <span className="font-semibold text-white">
+                  {index + 1}. {player.username}
+                </span>
+                <span className="text-green-400 font-bold">
+                  {player.score} pts
+                </span>
               </div>
             ))}
           </div>

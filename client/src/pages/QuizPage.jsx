@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 import "../App.css";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import socket from "../lib/socket";
 import Card from "../components/Card";
 import { useTimer } from "use-timer";
@@ -17,6 +17,8 @@ export default function QuizPage() {
   const [isQuizFinished, setIsQuizFinished] = useState(false);
   const [redirectToLeaderboard, setRedirectToLeaderboard] = useState(false);
   const context = useContext(ThemeContext);
+  const correctSound = useRef(null);
+  const wrongSound = useRef(null);
 
   const { time, start, reset, pause } = useTimer({
     initialTime: 10,
@@ -28,6 +30,16 @@ export default function QuizPage() {
   });
 
   useEffect(() => {
+    const inGameSound = new Audio("/ingame.mp3");
+    inGameSound.loop = true;
+    inGameSound.volume = 0.5;
+
+    correctSound.current = new Audio("/correct.mp3");
+    wrongSound.current = new Audio("/wrong.mp3");
+
+    inGameSound.play().catch((err) => {
+      console.warn("Autoplay diblokir browser:", err);
+    });
     socket.on("sendquestions", (data) => {
       setQuestions(data);
       setCurrentQuestionIndex(0);
@@ -45,6 +57,8 @@ export default function QuizPage() {
     });
 
     return () => {
+      inGameSound.pause();
+      inGameSound.currentTime = 0;
       socket.off("sendquestions");
       socket.off("viewresult");
       pause();
@@ -79,6 +93,7 @@ export default function QuizPage() {
       setScore(newScore);
 
       socket.emit("result", newScore);
+      correctSound.current?.play();
 
       Swal.fire({
         title: "Correct!",
@@ -88,6 +103,7 @@ export default function QuizPage() {
         showConfirmButton: false,
       });
     } else {
+      wrongSound.current?.play();
       Swal.fire({
         title: "Incorrect!",
         text: `The correct answer was: ${

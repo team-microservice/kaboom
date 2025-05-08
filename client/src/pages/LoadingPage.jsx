@@ -6,9 +6,17 @@ import Swal from "sweetalert2";
 import ThemeContext from "../contexts/theme";
 export default function LoadingPage() {
   const [players, setPlayers] = useState(null);
-  const context = useContext(ThemeContext)
+  const context = useContext(ThemeContext);
 
   useEffect(() => {
+    const prepareingSound = new Audio("/prepare.mp3");
+    prepareingSound.loop = true;
+    prepareingSound.volume = 0.5;
+
+    prepareingSound.play().catch((err) => {
+      console.warn("Autoplay diblokir browser:", err);
+    });
+
     socket.auth = {
       id: socket.id,
       username: localStorage.getItem("username"),
@@ -25,6 +33,8 @@ export default function LoadingPage() {
       setPlayers(user);
     });
     return () => {
+      prepareingSound.pause();
+      prepareingSound.currentTime = 0;
       socket.off("users/info");
       socket.off("updatechat");
     };
@@ -32,7 +42,9 @@ export default function LoadingPage() {
 
   if (players === null) {
     return (
-      <div className={`w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative ${context.theme}Background`}>
+      <div
+        className={`w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative ${context.theme}Background`}
+      >
         <span className="loading loading-dots loading-xl"></span>;
       </div>
     );
@@ -66,7 +78,9 @@ export default function LoadingPage() {
 
   return (
     <>
-      <div className={`w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative ${context.theme}Background`}>
+      <div
+        className={`w-screen min-h-screen bg-cover bg-center flex items-center justify-center relative ${context.theme}Background`}
+      >
         <div
           id="overlay"
           className={`absolute inset-0 ${context.theme}Overlay z-0 transition duration-500`}
