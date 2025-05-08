@@ -1,8 +1,6 @@
 import Swal from "sweetalert2";
 import "../App.css";
-import axios from "axios";
 import { useContext, useEffect, useState, useRef } from "react";
-import { useContext, useEffect, useState } from "react";
 import socket from "../lib/socket";
 import Card from "../components/Card";
 import { useTimer } from "use-timer";
