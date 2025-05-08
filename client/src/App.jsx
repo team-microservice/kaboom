@@ -7,11 +7,9 @@ import Login from "./pages/Login";
 import LoadingPage from "./pages/LoadingPage";
 import QuizPage from "./pages/QuizPage";
 import { ThemeProvider } from "./contexts/theme";
-import Leaderboard from "./pages/LeaderBoard";
+import Leaderboard from "./pages/Leaderboard";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <ThemeProvider>

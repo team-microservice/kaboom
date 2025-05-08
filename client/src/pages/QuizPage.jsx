@@ -28,6 +28,8 @@ export default function QuizPage() {
   });
 
   useEffect(() => {
+    socket.disconnect().connect();
+
     socket.on("sendquestions", (data) => {
       setQuestions(data);
       setCurrentQuestionIndex(0);

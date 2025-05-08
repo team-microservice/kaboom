@@ -11,6 +11,8 @@ export default function Leaderboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    socket.disconnect().connect();
+    
     socket.on("leaderboard/update", (data) => {
       setPlayers(data);
     });
@@ -19,7 +21,7 @@ export default function Leaderboard() {
 
     return () => {
       socket.off("leaderboard/update");
-    };
+    }; 
   }, []);
 
   return (
