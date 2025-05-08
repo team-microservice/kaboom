@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>username</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: "Quicksand", sans-serif;
+        transition: background-image 0.5s ease-in-out;
+      }
+
+      .snowflake {
+        position: fixed;
+        top: -10px;
+        color: white;
+        font-size: 1em;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+        user-select: none;
+        z-index: 1;
+        pointer-events: none;
+        animation: fall linear forwards;
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(105vh);
+        }
+      }
+    </style>
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body
+    id="body"
+    class="min-h-screen bg-cover bg-center flex items-center justify-center relative"
+    style="
+      background-image: url('https://4kwallpapers.com/images/walls/thumbs_3t/4587.png');
+    "
+  >
+    <div
+      id="overlay"
+      class="absolute inset-0 bg-white bg-opacity-40 z-0 transition duration-500"
+    ></div>
+
+    <div id="snowfall-container"></div>
+
+    <!-- Toggle Button -->
+    <!-- Toggle Button -->
+    <button
+      id="toggleMode"
+      class="absolute top-6 left-1/2 transform -translate-x-1/2 z-20 bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-700 transition"
+    >
+      Dark Mode
+    </button>
+
+    <div
+      id="card"
+      class="bg-white border-[5px] border-blue-400 rounded-2xl p-10 w-[500px] text-center relative z-10 shadow-xl transition duration-500"
+    >
+      <div
+        class="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow-md text-sm"
+      >
+        WELCOME
+      </div>
+      <h2 id="title" class="text-2xl font-bold text-gray-800 mb-6">
+        Just Play a Micro Service Quiz
+      </h2>
+      <form>
+        <div class="flex items-center bg-gray-100 rounded-full px-5 py-3 mb-6">
+          <i class="fas fa-user text-gray-500 text-lg mr-3"></i>
+          <input
+            type="text"
+            placeholder="Enter your username"
+            required
+            class="bg-transparent focus:outline-none text-base w-full"
+          />
+        </div>
+        <button
+          type="submit"
+          class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-10 rounded-full shadow-md transition duration-300"
+        >
+          START
+        </button>
+      </form>
+    </div>
+
+    <script>
+      // Snowfall effect
+      function createSnowflake() {
+        const snowflake = document.createElement("div");
+        snowflake.classList.add("snowflake");
+        snowflake.textContent = "❄";
+
+        const size = Math.random() * 1 + 0.5;
+        const startPositionX = Math.random() * 100;
+        const duration = Math.random() * 5 + 5;
+        const opacity = Math.random() * 0.6 + 0.4;
+
+        snowflake.style.left = `${startPositionX}%`;
+        snowflake.style.fontSize = `${size}em`;
+        snowflake.style.opacity = opacity;
+        snowflake.style.animationDuration = `${duration}s`;
+
+        document.body.appendChild(snowflake);
+        setTimeout(() => snowflake.remove(), duration * 1000);
+      }
+
+      setInterval(createSnowflake, 200);
+      for (let i = 0; i < 20; i++) {
+        setTimeout(createSnowflake, 100 * i);
+      }
+
+      // Mode toggle
+      const toggleBtn = document.getElementById("toggleMode");
+      const card = document.getElementById("card");
+      const title = document.getElementById("title");
+      const overlay = document.getElementById("overlay");
+      const body = document.getElementById("body");
+
+      let isDark = false;
+
+      toggleBtn.addEventListener("click", () => {
+        isDark = !isDark;
+
+        if (isDark) {
+          // Dark mode styles
+          body.style.backgroundImage =
+            "url('https://4kwallpapers.com/images/walls/thumbs_3t/4584.png')";
+          overlay.classList.replace("bg-white", "bg-black");
+          overlay.classList.replace("bg-opacity-40", "bg-opacity-60");
+          card.classList.remove("bg-white", "border-blue-400");
+          card.classList.add(
+            "bg-gray-900",
+            "border-orange-500",
+            "text-red-500"
+          );
+          title.classList.remove("text-gray-800");
+          toggleBtn.textContent = "Light Mode";
+        } else {
+          // Light mode styles
+          body.style.backgroundImage =
+            "url('https://4kwallpapers.com/images/walls/thumbs_3t/4587.png')";
+          overlay.classList.replace("bg-black", "bg-white");
+          overlay.classList.replace("bg-opacity-60", "bg-opacity-40");
+          card.classList.add("bg-white", "border-blue-400", "text-red-500");
+          card.classList.remove(
+            "bg-gray-900",
+            "border-orange-500",
+            "text-white"
+          );
+          title.classList.add("text-gray-800");
+          toggleBtn.textContent = "Dark Mode";
+        }
+      });
+    </script>
+  </body>
+</html>

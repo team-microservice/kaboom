@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>loading</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: "Quicksand", sans-serif;
+        transition: background-image 0.5s ease-in-out;
+      }
+
+      /* Snowfall animation */
+      .snowflake {
+        position: fixed;
+        top: -10px;
+        color: white;
+        font-size: 1em;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+        user-select: none;
+        z-index: 1;
+        pointer-events: none;
+        animation: fall linear forwards;
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(105vh);
+        }
+      }
+    </style>
+  </head>
+  <body
+    id="body"
+    class="min-h-screen bg-cover bg-center flex items-center justify-center relative"
+    style="
+      background-image: url('https://4kwallpapers.com/images/walls/thumbs_3t/4584.png');
+    "
+  >
+    <!-- Overlay -->
+    <div
+      id="overlay"
+      class="absolute inset-0 bg-black bg-opacity-40 z-0 transition duration-500"
+    ></div>
+
+    <!-- Snowfall container (will be filled by JS) -->
+    <div id="snowfall-container"></div>
+
+    <!-- Toggle Button -->
+    <button
+      id="toggleMode"
+      class="absolute top-6 left-1/2 transform -translate-x-1/2 z-20 bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-700 transition"
+    >
+      Light Mode
+    </button>
+
+    <!-- Result Container -->
+    <div
+      id="card"
+      class="bg-gray-900 border-[5px] border-orange-500 rounded-2xl p-10 w-[600px] text-center relative z-10 shadow-xl transition duration-500 text-white"
+    >
+      <div
+        id="resultBadge"
+        class="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow-md text-sm"
+      >
+        PREPARING
+      </div>
+
+      <h1 id="resultHeader" class="text-4xl font-bold text-orange-500 mb-4">
+        2 Players Connected
+      </h1>
+      <h2 id="resultSubheader" class="text-2xl font-bold text-gray-500 mb-8">
+        The game will start in 10 seconds....
+      </h2>
+
+      <div
+        id="rulesSection"
+        class="bg-yellow-50 rounded-lg p-4 mb-6 text-black"
+      >
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Rules</h3>
+        <ul class="text-left list-disc pl-8 space-y-2">
+          <li>Each question has 10 seconds time.</li>
+          <li>Click on the answer. Choices are disabled after one click</li>
+          <li>Four Questions</li>
+        </ul>
+      </div>
+
+      <div id="winnerSection" class="hidden">
+        <div class="mb-8">
+          <img
+            id="trophyImage"
+            src="https://cdn-icons-png.flaticon.com/512/3112/3112946.png"
+            alt="Trophy"
+            class="w-32 h-32 mx-auto mb-4"
+          />
+          <h3 id="winnerMessage" class="text-2xl font-bold text-green-600">
+            You Won!
+          </h3>
+          <p id="winnerDesc" class="text-gray-300 mt-2">
+            Congratulations on your victory!
+          </p>
+        </div>
+      </div>
+
+      <div id="loserSection" class="hidden">
+        <div class="mb-8">
+          <img
+            id="loseImage"
+            src="https://cdn-icons-png.flaticon.com/512/6134/6134065.png"
+            alt="Lose"
+            class="w-32 h-32 mx-auto mb-4"
+          />
+          <h3 id="loserMessage" class="text-2xl font-bold text-red-600">
+            You Lost!
+          </h3>
+          <p id="loserDesc" class="text-gray-300 mt-2">
+            Better luck next time!
+          </p>
+        </div>
+      </div>
+
+      <button
+        id="playAgainButton"
+        onclick="playAgain()"
+        class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-10 rounded-full shadow-md transition duration-300 hidden"
+      >
+        PLAY AGAIN
+      </button>
+    </div>
+
+    <script>
+      // Dark/Light mode elements
+      const toggleBtn = document.getElementById("toggleMode");
+      const card = document.getElementById("card");
+      const overlay = document.getElementById("overlay");
+      const body = document.getElementById("body");
+      const rulesSection = document.getElementById("rulesSection");
+      const winnerDesc = document.getElementById("winnerDesc");
+      const loserDesc = document.getElementById("loserDesc");
+
+      let isDark = true; // Start with dark mode by default
+
+      // Mode toggle function
+      toggleBtn.addEventListener("click", () => {
+        isDark = !isDark;
+
+        if (isDark) {
+          // Dark mode styles
+          body.style.backgroundImage =
+            "url('https://4kwallpapers.com/images/walls/thumbs_3t/4584.png')";
+          overlay.classList.replace("bg-white", "bg-black");
+          overlay.classList.replace("bg-opacity-20", "bg-opacity-40");
+
+          card.classList.remove("bg-white", "border-blue-400", "text-black");
+          card.classList.add("bg-gray-900", "border-orange-500", "text-white");
+
+          // Update rules section
+          rulesSection.classList.remove("bg-blue-50");
+          rulesSection.classList.add("bg-yellow-50");
+
+          // Update winner/loser descriptions
+          if (winnerDesc)
+            winnerDesc.classList.replace("text-gray-600", "text-gray-300");
+          if (loserDesc)
+            loserDesc.classList.replace("text-gray-600", "text-gray-300");
+
+          toggleBtn.textContent = "Light Mode";
+        } else {
+          // Light mode styles
+          body.style.backgroundImage =
+            "url('https://4kwallpapers.com/images/walls/thumbs_3t/4587.png')";
+          overlay.classList.replace("bg-black", "bg-white");
+          overlay.classList.replace("bg-opacity-40", "bg-opacity-20");
+
+          card.classList.remove(
+            "bg-gray-900",
+            "border-orange-500",
+            "text-white"
+          );
+          card.classList.add("bg-white", "border-blue-400", "text-black");
+
+          // Update rules section
+          rulesSection.classList.remove("bg-yellow-50");
+          rulesSection.classList.add("bg-blue-50");
+
+          // Update winner/loser descriptions
+          if (winnerDesc)
+            winnerDesc.classList.replace("text-gray-300", "text-gray-600");
+          if (loserDesc)
+            loserDesc.classList.replace("text-gray-300", "text-gray-600");
+
+          toggleBtn.textContent = "Dark Mode";
+        }
+      });
+
+      // Sample function to show winner or loser section
+      function showResult(isWinner, score) {
+        // Update header
+        document.getElementById("resultHeader").textContent = isWinner
+          ? "VICTORY!"
+          : "DEFEAT!";
+        document.getElementById("resultSubheader").textContent = isWinner
+          ? "You are the quiz champion!"
+          : "The opponent was faster this time";
+
+        // Update badge color
+        const badge = document.getElementById("resultBadge");
+        badge.textContent = "GAME RESULT";
+        badge.classList.remove("bg-red-600");
+        badge.classList.add(isWinner ? "bg-green-600" : "bg-red-600");
+
+        // Show appropriate section
+        if (isWinner) {
+          document.getElementById("winnerSection").classList.remove("hidden");
+        } else {
+          document.getElementById("loserSection").classList.remove("hidden");
+        }
+
+        // Show play again button
+        document.getElementById("playAgainButton").classList.remove("hidden");
+      }
+
+      function playAgain() {
+        window.location.href = "/play";
+      }
+
+      // Get result from URL parameters (just for demo purposes)
+      const urlParams = new URLSearchParams(window.location.search);
+      const result = urlParams.get("result");
+
+      // If result parameter exists, show appropriate screen
+      if (result === "win") {
+        showResult(true);
+      } else if (result === "lose") {
+        showResult(false);
+      }
+      // Otherwise show the default waiting screen
+
+      // Snowfall effect
+      function createSnowflake() {
+        const snowflake = document.createElement("div");
+        snowflake.classList.add("snowflake");
+        snowflake.textContent = "❄";
+
+        // Random properties for natural look
+        const size = Math.random() * 1 + 0.5; // Snowflake size between 0.5em and 1.5em
+        const startPositionX = Math.random() * 100; // X position from 0% to 100%
+        const duration = Math.random() * 5 + 5; // Fall duration between 5s and 10s
+        const opacity = Math.random() * 0.6 + 0.4; // Opacity between 0.4 and 1
+
+        // Apply random styles
+        snowflake.style.left = `${startPositionX}%`;
+        snowflake.style.fontSize = `${size}em`;
+        snowflake.style.opacity = opacity;
+        snowflake.style.animationDuration = `${duration}s`;
+
+        // Add to DOM
+        document.body.appendChild(snowflake);
+
+        // Remove after animation completes
+        setTimeout(() => {
+          snowflake.remove();
+        }, duration * 1000);
+      }
+
+      // Create snowflakes at intervals
+      setInterval(createSnowflake, 200); // New snowflake every 200ms
+
+      // Create initial batch of snowflakes
+      for (let i = 0; i < 20; i++) {
+        setTimeout(createSnowflake, 100 * i);
+      }
+    </script>
+  </body>
+</html>

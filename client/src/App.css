@@ -1,0 +1,62 @@
+@import 'tailwindcss';
+@plugin 'daisyui';
+
+body {
+        font-family: "Quicksand", sans-serif;
+        transition: background-image 0.5s ease-in-out;
+      }
+
+      .lightBackground {
+        background-image: url(https://4kwallpapers.com/images/walls/thumbs_3t/4587.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+      }
+
+      .lightOverlay {
+        background-color: white;
+        opacity: 0.4;
+      }
+
+      .darkBackground {
+        background-image: url(https://4kwallpapers.com/images/walls/thumbs_3t/4584.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+      }
+
+      .darkOverlay {
+        background-color: black;
+        opacity: 0.6;
+      }
+
+      .lightCard {
+        background-color: white;
+        border-color: #51a2ff;
+        color: #101828;
+      }
+
+      .darkCard {
+        background-color: #101828;
+        border-color: #ff6900;
+        color: aliceblue;
+      }
+
+
+      .snowflake {
+        position: fixed;
+        top: -10px;
+        color: white;
+        font-size: 1em;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+        user-select: none;
+        z-index: 1;
+        pointer-events: none;
+        animation: fall linear forwards;
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(105vh);
+        }
+      }
