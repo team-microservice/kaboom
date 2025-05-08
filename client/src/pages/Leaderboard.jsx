@@ -9,8 +9,14 @@ export default function Leaderboard() {
   const [players, setPlayers] = useState([]);
 
   const navigate = useNavigate();
+  
+  const handleBackToHome = () => {
+    localStorage.clear();
+    navigate("/");
+  };
 
   useEffect(() => {
+
     const leaderboardSound = new Audio("/leaderboard.mp3");
     leaderboardSound.loop = true;
     leaderboardSound.volume = 0.5;
@@ -18,6 +24,9 @@ export default function Leaderboard() {
     leaderboardSound.play().catch((err) => {
       console.warn("Autoplay diblokir browser:", err);
     });
+
+    socket.disconnect().connect();
+    
     socket.on("leaderboard/update", (data) => {
       setPlayers(data);
     });
@@ -28,7 +37,7 @@ export default function Leaderboard() {
       leaderboardSound.pause();
       leaderboardSound.currentTime = 0;
       socket.off("leaderboard/update");
-    };
+    }; 
   }, []);
 
   return (
@@ -43,7 +52,7 @@ export default function Leaderboard() {
         <div id="snowfall-container" />
         <div className="absolute top-5 left-5 z-10">
           <button
-            onClick={() => navigate("/")}
+            onClick={handleBackToHome}
             className="bg-white bg-opacity-90 px-4 py-2 rounded-full shadow-md font-semibold text-red-600 hover:bg-opacity-100 transition"
             id="backButton"
           >

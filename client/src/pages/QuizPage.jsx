@@ -2,6 +2,7 @@ import Swal from "sweetalert2";
 import "../App.css";
 import axios from "axios";
 import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useState } from "react";
 import socket from "../lib/socket";
 import Card from "../components/Card";
 import { useTimer } from "use-timer";
@@ -17,17 +18,46 @@ export default function QuizPage() {
   const [isQuizFinished, setIsQuizFinished] = useState(false);
   const [redirectToLeaderboard, setRedirectToLeaderboard] = useState(false);
   const context = useContext(ThemeContext);
+
   const correctSound = useRef(null);
   const wrongSound = useRef(null);
+  const maxTime = 10;
+
+  useEffect(() => {
+    const savedQuizData = localStorage.getItem('quizData');
+    if (savedQuizData) {
+      const data = JSON.parse(savedQuizData);
+      setQuestions(data.questions);
+      setCurrentQuestionIndex(data.currentQuestionIndex || 0);
+      setScore(data.score || 0);
+      setOpponentScore(data.opponentScore || 0);
+      setIsQuizFinished(data.isQuizFinished || false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (questions) {
+      const dataToSave = {
+        questions,
+        currentQuestionIndex,
+        score,
+        opponentScore,
+        isQuizFinished
+      };
+      localStorage.setItem('quizData', JSON.stringify(dataToSave));
+    }
+  }, [questions, currentQuestionIndex, score, opponentScore, isQuizFinished]);
 
   const { time, start, reset, pause } = useTimer({
-    initialTime: 10,
+    initialTime: maxTime,
     timerType: "DECREMENTAL",
     endTime: 0,
     onTimeOver: () => {
       handleNextQuestion();
     },
   });
+
+  const timerProgressPercentage = (time / maxTime) * 100;
 
   useEffect(() => {
     const inGameSound = new Audio("/ingame.mp3");
@@ -40,6 +70,9 @@ export default function QuizPage() {
     inGameSound.play().catch((err) => {
       console.warn("Autoplay diblokir browser:", err);
     });
+
+    socket.disconnect().connect();
+
     socket.on("sendquestions", (data) => {
       setQuestions(data);
       setCurrentQuestionIndex(0);
@@ -80,6 +113,7 @@ export default function QuizPage() {
       setIsQuizFinished(true);
       setRedirectToLeaderboard(true);
       reset();
+      localStorage.removeItem('quizData');
     }
   };
 
@@ -147,13 +181,6 @@ export default function QuizPage() {
         />
         <div id="snowfall-container" />
 
-        {/* Timer */}
-        <div className="absolute top-5 w-20 left-1/2 transform -translate-x-1/2 mt-12 z-10">
-          <div className="bg-red-600 text-white px-4 py-2 rounded-full text-center font-bold">
-            {time}s
-          </div>
-        </div>
-
         {/* Opponent Score (top-left) */}
         <div className="absolute top-5 left-5 z-10">
           <div
@@ -180,6 +207,14 @@ export default function QuizPage() {
           questions={questions}
           setSelectedAnswer={setSelectedAnswer}
         />
+
+        {/* Timer Progress Bar di bawah halaman */}
+        <div className="absolute bottom-0 left-0 right-0 h-3 z-20 bg-gray-200">
+          <div 
+            className="h-full bg-red-600 transition-all duration-1000 ease-linear"
+            style={{ width: `${timerProgressPercentage}%` }}
+          />
+        </div>
       </div>
     </>
   );
