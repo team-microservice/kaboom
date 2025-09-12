@@ -12,19 +12,19 @@ const app = express();
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const leaderboardPath = path.join(__dirname, '/data/leaderboard.json');
+const leaderboardPath = path.join(__dirname, "/data/leaderboard.json");
 
 function loadLeaderboard() {
   try {
     if (fs.existsSync(leaderboardPath)) {
-      const data = fs.readFileSync(leaderboardPath, 'utf8');
+      const data = fs.readFileSync(leaderboardPath, "utf8");
       return JSON.parse(data);
     }
   } catch (err) {
-    console.error('Error loading leaderboard:', err);
+    console.error("Error loading leaderboard:", err);
   }
   return [];
 }
@@ -33,7 +33,7 @@ function saveLeaderboard(data) {
   try {
     fs.writeFileSync(leaderboardPath, JSON.stringify(data, null, 2));
   } catch (err) {
-    console.error('Error saving leaderboard:', err);
+    console.error("Error saving leaderboard:", err);
   }
 }
 
@@ -55,8 +55,10 @@ const scores = {};
 let leaderboardData = loadLeaderboard();
 
 function updateLeaderboard(username, score) {
-  const existingPlayerIndex = leaderboardData.findIndex(player => player.username === username);
-  
+  const existingPlayerIndex = leaderboardData.findIndex(
+    (player) => player.username === username
+  );
+
   if (existingPlayerIndex !== -1) {
     if (score > leaderboardData[existingPlayerIndex].score) {
       leaderboardData[existingPlayerIndex].score = score;
@@ -64,13 +66,13 @@ function updateLeaderboard(username, score) {
   } else {
     leaderboardData.push({ username, score });
   }
-  
+
   leaderboardData.sort((a, b) => b.score - a.score);
-  
+
   leaderboardData = leaderboardData.slice(0, 5);
-  
+
   saveLeaderboard(leaderboardData);
-  
+
   return leaderboardData;
 }
 
@@ -133,7 +135,7 @@ io.on("connection", (socket) => {
     io.emit("users/info", user);
 
     const result = await axios.get(
-      "https://gp.dhronz.space/gemini/generate-quiz"
+      "https://kaboom.abigailzemira.space/gemini/generate-quiz"
     );
     const questions = result.data;
 
@@ -148,13 +150,16 @@ io.on("connection", (socket) => {
   socket.on("result", function (data) {
     io.emit("viewresult", {
       score: data,
-      username: socket.handshake.auth.username || socket.username
+      username: socket.handshake.auth.username || socket.username,
     });
 
     const usernameToUse = socket.handshake.auth.username || socket.username;
-    
+
     if (usernameToUse && data) {
-      const updatedLeaderboard = updateLeaderboard(usernameToUse, parseInt(data) || 0);
+      const updatedLeaderboard = updateLeaderboard(
+        usernameToUse,
+        parseInt(data) || 0
+      );
       io.emit("leaderboard/update", updatedLeaderboard);
     }
   });
@@ -163,8 +168,8 @@ io.on("connection", (socket) => {
     console.log("Client disconnected:", socket.username || socket.id);
     if (socket.username) {
       saveLeaderboard(leaderboardData);
-      
-      getOnlineUsers(io).then(users => {
+
+      getOnlineUsers(io).then((users) => {
         io.emit("users/info", users);
       });
     }
